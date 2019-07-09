@@ -1,6 +1,7 @@
 package com.ecommerce.service;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +34,16 @@ public class UserService {
 		try {
 			User userEntity = modelMapper.map(userDTO, User.class);
 
-			if(userRepo.findByUserName(userDTO.getUserName()) != null)
-				throw new UserManagementException("User name already registered");
+		//	if(userRepo.findByUserName(userDTO.getUserName()) != null)
+		//		throw new UserManagementException("User name already registered");
 			if(userRepo.findByuserEmail(userDTO.getUserEmail()) != null)
 				throw new UserManagementException("User email already registered");
 			if(userRepo.findByContact(userDTO.getContact()) != null)
 				throw new UserManagementException("Contact already Registered");
+			
+			Base64.Encoder encoder = Base64.getEncoder();
+			String encryptedPassword = encoder.encodeToString(userDTO.getPassword().getBytes());
+			userEntity.setPassword(encryptedPassword);
 			
 			if (userRepo.save(userEntity) != null)
 				return "User Registration Successful";
@@ -73,7 +78,6 @@ public class UserService {
 			else
 				throw new UserManagementException("Something went wrong!! Please contact support team"); // internal server error
 		} else {
-			// log here
 			throw new UserManagementException("User with ID "+userDTO.getUserId()+" doesn't exist");
 		}
 	}
@@ -105,11 +109,21 @@ public class UserService {
 		}
 	}
 
-	public String login(String userName, String password) throws UserManagementException {
-		if (userRepo.findByUserNameAndPassword(userName, password) != null)
+	public String login(String userName, String password) throws UserManagementException,Exception {
+		
+		User user = userRepo.findByUserName(userName);
+		byte[] decodedBytes = Base64.getDecoder().decode(user.getPassword());
+		String decodedString = new String(decodedBytes);
+
+		if(decodedString.equals(password))
 			return "Login successful";
 		else
 			throw new UserManagementException("Enter valid credentials");
+		
+	/*	if (userRepo.findByUserNameAndPassword(userName, deccryptedPassword.toString()) != null)
+			return "Login successful";
+		else
+			throw new UserManagementException("Enter valid credentials");*/
 	}
 
 }

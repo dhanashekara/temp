@@ -26,53 +26,32 @@ public class UserManagementController {
 	@Autowired
 	UserService userService;
 
-	@PostMapping("/login")
+	//@PostMapping("/login")
+	@GetMapping("/login")
 	public ResponseEntity<String> login(@RequestHeader(value = "Username") String userName,
-			@RequestHeader(value = "Password") String password) throws UserManagementException {
+			@RequestHeader(value = "Password") String password) throws Exception {
 
-	//	String status = userService.login(userName, password);
-	//	if (status.equalsIgnoreCase("Login successful"))
-			return new ResponseEntity<String>(userService.login(userName, password),HttpStatus.FOUND);
-	//	else
-	//		return new ResponseEntity<String>(status,HttpStatus.NOT_FOUND);
+		return new ResponseEntity<String>(userService.login(userName, password), HttpStatus.FOUND);
 
 	}
 
 	@PostMapping("/user")
 	public ResponseEntity<String> registerUser(@Valid @RequestBody UserDTO user) throws UserManagementException {
 
-	//	String status = userService.registerUser(user);
-	//	if (status.equalsIgnoreCase("User Registration Successful")) {
-			return new ResponseEntity<String>(userService.registerUser(user), HttpStatus.CREATED);
-		/*} else {
-			return new ResponseEntity<String>(status, HttpStatus.INTERNAL_SERVER_ERROR);
-		}*/
+		return new ResponseEntity<String>(userService.registerUser(user), HttpStatus.CREATED);
 
 	}
 
 	@PutMapping("/user")
 	public ResponseEntity<String> updateUserProfile(@RequestBody UserDTO userDTO) throws UserManagementException {
 
-	//	String status = userService.updateUserProfile(userDTO);
-		//if (status.equalsIgnoreCase("User Details updated successfully")) {
-			return new ResponseEntity<String>(userService.updateUserProfile(userDTO), HttpStatus.OK);
-		/*} else if (status.equalsIgnoreCase("User with ID " + userDTO.getUserId() + " doesn't exist")) {
-			return new ResponseEntity<String>(status, HttpStatus.NOT_FOUND);
-		} else {
-			return new ResponseEntity<String>(status, HttpStatus.INTERNAL_SERVER_ERROR);
-		}*/
+		return new ResponseEntity<String>(userService.updateUserProfile(userDTO), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/users/{userid}")
-	public ResponseEntity<String> deleteUserProfile(@PathVariable(name = "userid") long userId) throws UserManagementException {
-		//String status = userService.deleteUserProfile(userId);
-		//if (status.equalsIgnoreCase("User Details deleted successfully")) {
-			return new ResponseEntity<String>(userService.deleteUserProfile(userId), HttpStatus.OK);
-		/*} else if (status.equalsIgnoreCase("User with ID " + userId + " doesn't exist")) {
-			return new ResponseEntity<String>(status, HttpStatus.NOT_FOUND);
-		} else {
-			return new ResponseEntity<String>(status, HttpStatus.INTERNAL_SERVER_ERROR);
-		}*/
+	public ResponseEntity<String> deleteUserProfile(@PathVariable(name = "userid") long userId)
+			throws UserManagementException {
+		return new ResponseEntity<String>(userService.deleteUserProfile(userId), HttpStatus.OK);
 
 	}
 
